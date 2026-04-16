@@ -2,9 +2,9 @@ import xml.etree.ElementTree as ET
 import glob
 import sys
 import unicodedata
+import os  # <-- NOVA IMPORTAÇÃO ADICIONADA AQUI
 
 # --- 1. DICIONÁRIOS DE MUSICOGRAFIA BRAILLE ---
-
 
 OCTAVAS = {1: '⠈', 2: '⠘', 3: '⠸', 4: '⠐', 5: '⠨', 6: '⠰', 7: '⠠'}
 PAUSAS = {'eighth': '⠦', 'quarter': '⠧', 'half': '⠣', 'whole': '⠤'}
@@ -24,7 +24,6 @@ NOTAS = {
     'A': {'eighth': '⠊', 'quarter': '⠪', 'half': '⠎', 'whole': '⠮'},
     'B': {'eighth': '⠚', 'quarter': '⠺', 'half': '⠞', 'whole': '⠾'},
 }
-
 
 # --- 2. LÓGICA DE INTERVALOS E OITAVAS ---
 
@@ -62,7 +61,6 @@ def precisa_sinal_oitava(nota_ant, oitava_ant, nota_atual, oitava_atual):
     else:
         return True
 
-
 # --- 3. MOTOR DE PROCESSAMENTO XML ---
 
 
@@ -70,7 +68,7 @@ def transcrever_musicxml(caminho_arquivo):
     tree = ET.parse(caminho_arquivo)
     root = tree.getroot()
 
-# 1. Extração Dinâmica de Metadados
+    # 1. Extração Dinâmica de Metadados
     titulo_xml = root.find(
         './/work-title').text if root.find('.//work-title') is not None else "Sem Titulo"
     titulo = remover_acentos(titulo_xml)
@@ -135,6 +133,7 @@ def transcrever_musicxml(caminho_arquivo):
 
                         nota_anterior = step
                         oitava_anterior = octave
+
             # 2. PROCESSA AS BARRAS (Nova implementação)
             elif element.tag == 'barline':
                 repeat = element.find('repeat')
@@ -157,7 +156,7 @@ def transcrever_musicxml(caminho_arquivo):
 
 # --- 4. EXPORTAÇÃO E SALVAMENTO ---
 
-    # 1. Monta a string completa com toda a música (Note o \n extra para dar o espaçamento que tiramos do cabeçalho)
+    # 1. Monta a string completa com toda a música
     saida_final = f"{titulo}\n\n"
     saida_final += f"{cabecalho_braille}\n\n"
 
@@ -169,22 +168,32 @@ def transcrever_musicxml(caminho_arquivo):
     # 2. Imprime no terminal para acompanhamento visual
     print(saida_final)
 
-    # 3. Salva no arquivo .txt com o nome limpo
-    nome_arquivo = f"{titulo}.txt"
+    # 3. Salva no arquivo .txt dentro da pasta transcrições
+    pasta_saida = "TXT"
+    os.makedirs(pasta_saida, exist_ok=True)  # Cria a pasta se ela não existir
+
+    nome_arquivo = os.path.join(pasta_saida, f"{titulo}.txt")
     with open(nome_arquivo, "w", encoding="utf-8") as f:
         f.write(saida_final)
 
     print("-" * 30)
-    print(f"Sucesso! Partitura exportada e salva como: '{nome_arquivo}'")
+    print(f"Sucesso! Partitura exportada e salva em: '{nome_arquivo}'")
 
 
 # --- 5. EXECUÇÃO EM LOTE (BATCH) ---
 if __name__ == "__main__":
-    # Busca todos os arquivos .xml na pasta
-    arquivos_xml = glob.glob("*.xml")
+    pasta_entrada = "XML"
+
+    # Verifica se a pasta partituras existe, se não, cria para evitar erros
+    os.makedirs(pasta_entrada, exist_ok=True)
+
+    # Busca todos os arquivos .xml dentro da pasta 'partituras'
+    padrao_busca = os.path.join(pasta_entrada, "*.xml")
+    arquivos_xml = glob.glob(padrao_busca)
 
     if len(arquivos_xml) == 0:
-        print("Erro: Nenhum arquivo .xml foi encontrado no diretório atual.")
+        print(f"Erro: Nenhum arquivo .xml foi encontrado na pasta '{
+              pasta_entrada}'.")
         sys.exit(1)
 
     print(f"Encontrados {len(arquivos_xml)} arquivos para conversão.\n")
@@ -199,8 +208,7 @@ if __name__ == "__main__":
             transcrever_musicxml(arquivo)
             print(f"✓ Concluído com sucesso.\n")
         except Exception as e:
-            # Caso um arquivo específico esteja corrompido (como aquele UTF-16),
-            # o script pula ele e continua para o próximo.
+            # Caso um arquivo específico esteja corrompido, pula ele.
             print(f"✗ Erro ao processar {arquivo}: {e}\n")
 
         print("-" * 20)
