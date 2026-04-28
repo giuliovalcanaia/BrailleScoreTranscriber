@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor MusicXML para Braille Musical</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Conversor MusicXML para Braille Musical</h1>
+
+        <div class="upload-section">
+            <label for="fileInput" class="upload-label">
+                <span>Selecione um arquivo MusicXML (.xml)</span>
+                <span class="upload-icon">&#8682;</span>
+            </label>
+            <input type="file" id="fileInput" accept=".xml,.musicxml">
+        </div>
+
+        <div id="status" class="status"></div>
+
+        <div class="output-section">
+            <div class="output-header">
+                <h2>Resultado em Braille</h2>
+                <button id="copyBtn" class="copy-btn" disabled>Copiar</button>
+            </div>
+            <pre id="output" class="output"></pre>
+        </div>
+
+        <div class="legend-toggle">
+            <button id="legendBtn" class="legend-btn">Mostrar Legenda</button>
+        </div>
+
+        <div id="legend" class="legend hidden">
+            <h2>Legenda dos Símbolos da Musicografia Braille</h2>
+
+            <div class="legend-section">
+                <h3>1. OITAVAS</h3>
+                <div class="legend-grid">
+                    <div class="legend-item"><span class="braille">⠈</span> 1ª</div>
+                    <div class="legend-item"><span class="braille">⠘</span> 2ª</div>
+                    <div class="legend-item"><span class="braille">⠸</span> 3ª</div>
+                    <div class="legend-item"><span class="braille">⠐</span> 4ª</div>
+                    <div class="legend-item"><span class="braille">⠨</span> 5ª</div>
+                    <div class="legend-item"><span class="braille">⠰</span> 6ª</div>
+                    <div class="legend-item"><span class="braille">⠠</span> 7ª</div>
+                </div>
+            </div>
+
+            <div class="legend-section">
+                <h3>2. PAUSAS</h3>
+                <div class="legend-grid">
+                    <div class="legend-item"><span class="braille">⠍</span> Semibreve</div>
+                    <div class="legend-item"><span class="braille">⠥</span> Mínima</div>
+                    <div class="legend-item"><span class="braille">⠧</span> Semínima</div>
+                    <div class="legend-item"><span class="braille">⠦</span> Colcheia</div>
+                    <div class="legend-item"><span class="braille">⠴</span> Semicolcheia</div>
+                </div>
+            </div>
+
+            <div class="legend-section">
+                <h3>3. NOTAS (Dó/C exemplo)</h3>
+                <div class="legend-grid">
+                    <div class="legend-item"><span class="braille">⠽</span> Semibreve</div>
+                    <div class="legend-item"><span class="braille">⠝</span> Mínima</div>
+                    <div class="legend-item"><span class="braille">⠹</span> Semínima</div>
+                    <div class="legend-item"><span class="braille">⠙</span> Colcheia</div>
+                    <div class="legend-item"><span class="braille">⠊</span> Semicolcheia</div>
+                    <div class="legend-item"><span class="braille">⠑</span> Fusa</div>
+                </div>
+            </div>
+
+            <div class="legend-section">
+                <h3>4. CIFRAS E SINAIS</h3>
+                <div class="legend-grid">
+                    <div class="legend-item"><span class="braille">⠨</span> Maiúscula</div>
+                    <div class="legend-item"><span class="braille">⠍</span> Menor</div>
+                    <div class="legend-item"><span class="braille">⠩</span> Sustenido</div>
+                    <div class="legend-item"><span class="braille">⠣</span> Bemol</div>
+                </div>
+            </div>
+
+            <div class="legend-section">
+                <h3>5. RITMO E REPETIÇÕES</h3>
+                <div class="legend-grid">
+                    <div class="legend-item"><span class="braille">⠼</span> Numérico</div>
+                    <div class="legend-item"><span class="braille">⠄</span> Ponto</div>
+                    <div class="legend-item"><span class="braille">⠣⠆</span> Repet. início</div>
+                    <div class="legend-item"><span class="braille">⠰⠜</span> Repet. fim</div>
+                    <div class="legend-item"><span class="braille">⠣⠅</span> Barra final</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
