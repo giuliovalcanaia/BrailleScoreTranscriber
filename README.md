@@ -14,8 +14,6 @@ Este documento detalha o diagrama de classes responsável por mapear a estrutura
 
 ## 1. Estrutura Principal (Hierarquia de Tempo)
 
-A espinha dorsal do modelo segue o caminho lógico da partitura.
-
 ### `Score` (Partitura)
 
 É a classe raiz do documento. Representa o arquivo musical como um todo e atua como a dona da linha do tempo.
