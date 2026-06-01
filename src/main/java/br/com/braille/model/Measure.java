@@ -1,6 +1,7 @@
 package main.java.br.com.braille.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Measure {
     // Used number as a String because some measures have notation as: "12a", "12b" or "X1"
