@@ -1,6 +1,10 @@
+package main.java.br.com.braille.model;
+
 import java.util.ArrayList;
 
 public class Measure {
+    // Used number as a String because some measures have notation as: "12a", "12b" or "X1"
+    private String number;
     private Integer divisions;
     private Clef clef;
     private KeySignature keySignature;

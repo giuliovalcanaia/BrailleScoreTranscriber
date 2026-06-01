@@ -1,3 +1,5 @@
+package main.java.br.com.braille.model;
+
 import java.util.ArrayList;
 import java.util.List;
 
