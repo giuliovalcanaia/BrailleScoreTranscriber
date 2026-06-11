@@ -1,4 +1,4 @@
-package main.java.br.com.braille.model;
+package br.com.braille.model;
 
 public enum Step {
     A,

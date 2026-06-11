@@ -1,4 +1,4 @@
-package main.java.br.com.braille.model;
+package br.com.braille.model;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
