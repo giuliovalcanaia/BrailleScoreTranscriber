@@ -51,4 +51,12 @@ public class Measure {
     public void setTimeSignature(TimeSignature timeSignature) {
         this.timeSignature = timeSignature;
     }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
 }

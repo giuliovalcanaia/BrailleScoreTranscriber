@@ -1,6 +1,5 @@
 package main.java.br.com.braille.model;
 
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -8,23 +7,27 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Score {
-    private String title;
+    private final String title;
     private Document domXMLBuffer;
     private final String filePath;
+    private List<Measure> measures = new ArrayList<>();
 
     // Construtor
     public Score(String filePath) {
         this.filePath = filePath;
         loadXMLToBuffer(filePath);
         this.title = extractTitle();
+        this.measures = extractMeasures();
     }
 
     /**
-    Método usado para ler o arquivo de texto que está em formato XML e então
-    convertê-lo para formato DOM ->  interface padrão definida pela W3C para acessar, ler, manipular ou alterar documentos XML
-    em formato hierárquico de nós
+     * Método usado para ler o arquivo de texto que está em formato XML e então
+     * convertê-lo para formato DOM ->  interface padrão definida pela W3C para acessar, ler, manipular ou alterar documentos XML
+     * em formato hierárquico de nós
      */
     private void loadXMLToBuffer(String filepath) {
         try {
@@ -48,14 +51,10 @@ public class Score {
     }
 
     /**
-    Método usado para capturar a String que contém o nome da obra
+     * Método usado para capturar a String que contém o nome da obra
+     * @return String
      */
     private String extractTitle() {
-        // Se o buffer estiver nulo (por falha na leitura), retorna a mensagem de erro
-        if (this.domXMLBuffer == null) {
-            return "Erro na leitura ou arquivo não carregado";
-        }
-
         // Busca todas as tags <credit> diretamente do seu buffer na memória
         NodeList creditList = domXMLBuffer.getElementsByTagName("credit");
 
@@ -90,7 +89,67 @@ public class Score {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    /**
+     * Método usado para extrair os compassos e convertê-los em objetos
+     * @return List
+     */
+    private List<Measure> extractMeasures() {
+        List<Measure> extractedMeasures = new ArrayList<>();
+
+        // Verifica se o buffer XML foi carregado corretamente
+        if (this.domXMLBuffer == null) {
+            return extractedMeasures;
+        }
+
+        // Busca todas as tags <measure> do arquivo XML
+        NodeList measureNodes = domXMLBuffer.getElementsByTagName("measure");
+        // Busca o bloco <attributes> dentro do compasso atual
+        NodeList attributesList = domXMLBuffer.getElementsByTagName("attributes");
+
+        // Itera sobre cada compasso encontrado
+        for (int i = 0; i < measureNodes.getLength(); i++) {
+            Element measureElement = (Element) measureNodes.item(i);
+            Measure currentMeasure = new Measure();
+
+            // ----- measure number -----
+            // Extrai o número do compasso (atributo 'number' da tag <measure>)
+            String number = measureElement.getAttribute("number");
+            currentMeasure.setNumber(number);
+
+            // ----- divisions -----
+            // Verifica se o compasso atual possui a tag <attributes>
+            if (attributesList.getLength() > 0) {
+                Element attributesElement = (Element) attributesList.item(0);
+
+                // Busca a tag <divisions> dentro do bloco de atributos
+                NodeList divisionsList = attributesElement.getElementsByTagName("divisions");
+
+                if (divisionsList.getLength() > 0) {
+                    // Extrai o texto, remove espaços em branco (trim) e converte para Inteiro
+                    String divisionsStr = divisionsList.item(0).getTextContent().trim();
+                    currentMeasure.setDivisions(Integer.parseInt(divisionsStr));
+                }
+            }
+
+            // --- AQUI ENTRA A LÓGICA FUTURA ---
+            // Exemplo: Buscar a tag <attributes> dentro deste compasso para pegar <divisions>, <clef>, etc.
+            // NodeList attributesNodes = measureElement.getElementsByTagName("attributes");
+            // Se existir, extrair e preencher currentMeasure.setDivisions(...), etc.
+
+            // Exemplo: Buscar tags <note> dentro deste compasso
+            // NodeList noteNodes = measureElement.getElementsByTagName("note");
+            // Iterar sobre noteNodes, criar objetos Note e adicionar em currentMeasure.getNotes().add(...)
+
+            // Adiciona o compasso preenchido na lista
+            extractedMeasures.add(currentMeasure);
+        }
+
+
+
+        return extractedMeasures;
+    }
+
+    public List<Measure> getMeasures() {
+        return measures;
     }
 }
